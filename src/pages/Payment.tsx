@@ -3,47 +3,31 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { 
   ArrowLeft, 
-  CreditCard, 
-  Smartphone, 
-  Building2, 
   CheckCircle2,
   Shield,
   Lock,
   Calendar,
   Clock,
   User,
-  Package
+  Package,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
-
-const paymentMethods = [
-  { id: "card", name: "Credit/Debit Card", icon: CreditCard },
-  { id: "upi", name: "UPI Payment", icon: Smartphone },
-  { id: "netbanking", name: "Net Banking", icon: Building2 },
-];
+import { useRazorpay } from "@/hooks/useRazorpay";
 
 const Payment = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
   const bookingDetails = location.state;
+  const { initiatePayment, isLoading, isScriptLoaded } = useRazorpay();
 
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  // Card details state
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiryDate, setExpiryDate] = useState("");
-  const [cvv, setCvv] = useState("");
-  const [cardName, setCardName] = useState("");
-
-  // UPI state
-  const [upiId, setUpiId] = useState("");
+  const [paymentDetails, setPaymentDetails] = useState<{
+    paymentId?: string;
+    orderId?: string;
+  }>({});
 
   if (!bookingDetails) {
     return (
@@ -60,48 +44,54 @@ const Payment = () => {
 
   const { date, time, mentor, plan } = bookingDetails;
 
-  const formatCardNumber = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    const matches = v.match(/\d{4,16}/g);
-    const match = (matches && matches[0]) || "";
-    const parts = [];
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    return parts.length ? parts.join(" ") : value;
-  };
-
-  const formatExpiryDate = (value: string) => {
-    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
-    if (v.length >= 2) {
-      return v.substring(0, 2) + "/" + v.substring(2, 4);
-    }
-    return v;
+  // Parse price to get numeric value (e.g., "₹2,999" -> 2999)
+  const parsePrice = (priceString: string): number => {
+    const numericValue = priceString.replace(/[^\d]/g, "");
+    return parseInt(numericValue, 10) || 0;
   };
 
   const handlePayment = async () => {
-    setIsProcessing(true);
+    const amount = parsePrice(plan?.price || "0");
     
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsProcessing(false);
-    setIsSuccess(true);
-    
-    toast({
-      title: "Payment Successful!",
-      description: "Your mentorship session has been booked.",
-    });
-  };
+    if (amount === 0) {
+      toast({
+        title: "Error",
+        description: "Invalid price amount",
+        variant: "destructive",
+      });
+      return;
+    }
 
-  const isFormValid = () => {
-    if (paymentMethod === "card") {
-      return cardNumber.length >= 19 && expiryDate.length === 5 && cvv.length >= 3 && cardName.length > 0;
-    }
-    if (paymentMethod === "upi") {
-      return upiId.includes("@");
-    }
-    return true;
+    initiatePayment({
+      amount,
+      currency: "INR",
+      name: "CareerBoost Mentorship",
+      description: `${plan?.name} - Session with ${mentor?.name}`,
+      notes: {
+        mentorName: mentor?.name || "",
+        planName: plan?.name || "",
+        sessionDate: date || "",
+        sessionTime: time || "",
+      },
+      onSuccess: (response) => {
+        setPaymentDetails({
+          paymentId: response.razorpay_payment_id,
+          orderId: response.razorpay_order_id,
+        });
+        setIsSuccess(true);
+        toast({
+          title: "Payment Successful!",
+          description: "Your mentorship session has been booked.",
+        });
+      },
+      onError: (error) => {
+        toast({
+          title: "Payment Failed",
+          description: error.message || "Something went wrong. Please try again.",
+          variant: "destructive",
+        });
+      },
+    });
   };
 
   if (isSuccess) {
@@ -149,6 +139,13 @@ const Payment = () => {
                 <span className="text-muted-foreground">Plan:</span>
                 <span className="text-foreground font-medium">{plan?.name}</span>
               </div>
+              {paymentDetails.paymentId && (
+                <div className="flex items-center gap-3 pt-2 border-t border-border mt-2">
+                  <CreditCard className="w-4 h-4 text-accent" />
+                  <span className="text-muted-foreground">Payment ID:</span>
+                  <span className="text-foreground font-medium text-xs">{paymentDetails.paymentId}</span>
+                </div>
+              )}
             </div>
           </div>
           <p className="text-sm text-muted-foreground mb-6">
@@ -182,201 +179,109 @@ const Payment = () => {
       </div>
 
       <div className="container-main py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Payment Form */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Payment Methods */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-card rounded-xl border border-border p-6"
-            >
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Select Payment Method
-              </h2>
-              <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-                <div className="grid sm:grid-cols-3 gap-4">
-                  {paymentMethods.map((method) => (
-                    <label
-                      key={method.id}
-                      className={`flex items-center gap-3 p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                        paymentMethod === method.id
-                          ? "border-accent bg-accent/5"
-                          : "border-border hover:border-accent/50"
-                      }`}
-                    >
-                      <RadioGroupItem value={method.id} id={method.id} />
-                      <method.icon className="w-5 h-5 text-accent" />
-                      <span className="text-sm font-medium text-foreground">
-                        {method.name}
-                      </span>
-                    </label>
-                  ))}
-                </div>
-              </RadioGroup>
-            </motion.div>
-
-            {/* Card Details */}
-            {paymentMethod === "card" && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-card rounded-xl border border-border p-6 space-y-4"
-              >
-                <h2 className="text-lg font-semibold text-foreground mb-4">
-                  Card Details
-                </h2>
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="cardName">Cardholder Name</Label>
-                    <Input
-                      id="cardName"
-                      placeholder="John Doe"
-                      value={cardName}
-                      onChange={(e) => setCardName(e.target.value)}
-                      className="mt-1.5"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="cardNumber">Card Number</Label>
-                    <Input
-                      id="cardNumber"
-                      placeholder="1234 5678 9012 3456"
-                      value={cardNumber}
-                      onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
-                      maxLength={19}
-                      className="mt-1.5"
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label htmlFor="expiry">Expiry Date</Label>
-                      <Input
-                        id="expiry"
-                        placeholder="MM/YY"
-                        value={expiryDate}
-                        onChange={(e) => setExpiryDate(formatExpiryDate(e.target.value))}
-                        maxLength={5}
-                        className="mt-1.5"
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        placeholder="123"
-                        type="password"
-                        value={cvv}
-                        onChange={(e) => setCvv(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                        maxLength={4}
-                        className="mt-1.5"
-                      />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* UPI Details */}
-            {paymentMethod === "upi" && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-card rounded-xl border border-border p-6"
-              >
-                <h2 className="text-lg font-semibold text-foreground mb-4">
-                  UPI Payment
-                </h2>
-                <div>
-                  <Label htmlFor="upiId">UPI ID</Label>
-                  <Input
-                    id="upiId"
-                    placeholder="yourname@upi"
-                    value={upiId}
-                    onChange={(e) => setUpiId(e.target.value)}
-                    className="mt-1.5"
-                  />
-                </div>
-              </motion.div>
-            )}
-
-            {/* Net Banking */}
-            {paymentMethod === "netbanking" && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-card rounded-xl border border-border p-6"
-              >
-                <h2 className="text-lg font-semibold text-foreground mb-4">
-                  Net Banking
-                </h2>
-                <p className="text-muted-foreground text-sm">
-                  You will be redirected to your bank's secure portal to complete the payment.
-                </p>
-              </motion.div>
-            )}
-
-            {/* Security Note */}
-            <div className="flex items-center gap-3 p-4 bg-accent/5 rounded-lg border border-accent/20">
-              <Shield className="w-5 h-5 text-accent flex-shrink-0" />
-              <p className="text-sm text-muted-foreground">
-                Your payment is secured with 256-bit SSL encryption. We never store your card details.
-              </p>
-            </div>
-          </div>
-
+        <div className="grid lg:grid-cols-2 gap-8 max-w-4xl mx-auto">
           {/* Order Summary */}
-          <div className="lg:col-span-1">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="bg-card rounded-xl border border-border p-6 sticky top-24"
-            >
-              <h2 className="text-lg font-semibold text-foreground mb-4">
-                Booking Summary
-              </h2>
-              
-              <div className="space-y-4 mb-6">
-                <div className="flex items-start gap-3">
-                  <User className="w-4 h-4 text-accent mt-1" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Mentor</p>
-                    <p className="text-foreground font-medium">{mentor?.name}</p>
-                    <p className="text-xs text-muted-foreground">{mentor?.expertise}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <Calendar className="w-4 h-4 text-accent mt-1" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Date</p>
-                    <p className="text-foreground font-medium">{date}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-accent mt-1" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Time</p>
-                    <p className="text-foreground font-medium">{time}</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-3">
-                  <Package className="w-4 h-4 text-accent mt-1" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Plan</p>
-                    <p className="text-foreground font-medium">{plan?.name}</p>
-                    <p className="text-xs text-muted-foreground">{plan?.description}</p>
-                  </div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-card rounded-xl border border-border p-6"
+          >
+            <h2 className="text-lg font-semibold text-foreground mb-6">
+              Booking Summary
+            </h2>
+            
+            <div className="space-y-4 mb-6">
+              <div className="flex items-start gap-3">
+                <User className="w-5 h-5 text-accent mt-0.5" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Mentor</p>
+                  <p className="text-foreground font-medium">{mentor?.name}</p>
+                  <p className="text-xs text-muted-foreground">{mentor?.expertise}</p>
                 </div>
               </div>
+              
+              <div className="flex items-start gap-3">
+                <Calendar className="w-5 h-5 text-accent mt-0.5" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Date</p>
+                  <p className="text-foreground font-medium">{date}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <Clock className="w-5 h-5 text-accent mt-0.5" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Time</p>
+                  <p className="text-foreground font-medium">{time}</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start gap-3">
+                <Package className="w-5 h-5 text-accent mt-0.5" />
+                <div>
+                  <p className="text-sm text-muted-foreground">Plan</p>
+                  <p className="text-foreground font-medium">{plan?.name}</p>
+                  <p className="text-xs text-muted-foreground">{plan?.description}</p>
+                </div>
+              </div>
+            </div>
 
+            {/* Plan Features */}
+            {plan?.features && plan.features.length > 0 && (
               <div className="border-t border-border pt-4 mb-6">
-                <div className="flex justify-between items-center text-lg">
-                  <span className="font-medium text-foreground">Total</span>
-                  <span className="font-bold text-highlight">{plan?.price}</span>
+                <p className="text-sm font-medium text-foreground mb-3">What's Included:</p>
+                <ul className="space-y-2">
+                  {plan.features.map((feature: string, index: number) => (
+                    <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 className="w-4 h-4 text-accent flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <div className="border-t border-border pt-4">
+              <div className="flex justify-between items-center text-xl">
+                <span className="font-medium text-foreground">Total</span>
+                <span className="font-bold text-highlight">{plan?.price}</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Payment Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="space-y-6"
+          >
+            {/* Payment Info Card */}
+            <div className="bg-card rounded-xl border border-border p-6">
+              <div className="text-center mb-6">
+                <CreditCard className="w-12 h-12 text-accent mx-auto mb-4" />
+                <h2 className="text-lg font-semibold text-foreground mb-2">
+                  Secure Payment via Razorpay
+                </h2>
+                <p className="text-sm text-muted-foreground">
+                  Pay securely using Credit/Debit Card, UPI, Net Banking, or Wallets
+                </p>
+              </div>
+
+              {/* Payment Methods Icons */}
+              <div className="flex flex-wrap justify-center gap-4 mb-6 py-4 border-y border-border">
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+                  <CreditCard className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs text-muted-foreground">Cards</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+                  <span className="text-xs font-semibold text-muted-foreground">UPI</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+                  <span className="text-xs text-muted-foreground">Net Banking</span>
+                </div>
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/50 rounded-lg">
+                  <span className="text-xs text-muted-foreground">Wallets</span>
                 </div>
               </div>
 
@@ -385,9 +290,9 @@ const Payment = () => {
                 size="lg"
                 className="w-full"
                 onClick={handlePayment}
-                disabled={isProcessing || !isFormValid()}
+                disabled={isLoading || !isScriptLoaded}
               >
-                {isProcessing ? (
+                {isLoading ? (
                   <span className="flex items-center gap-2">
                     <motion.div
                       animate={{ rotate: 360 }}
@@ -395,6 +300,15 @@ const Payment = () => {
                       className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
                     />
                     Processing...
+                  </span>
+                ) : !isScriptLoaded ? (
+                  <span className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                    />
+                    Loading...
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
@@ -407,8 +321,23 @@ const Payment = () => {
               <p className="text-xs text-center text-muted-foreground mt-4">
                 By proceeding, you agree to our Terms of Service and Refund Policy
               </p>
-            </motion.div>
-          </div>
+            </div>
+
+            {/* Security Note */}
+            <div className="flex items-center gap-3 p-4 bg-accent/5 rounded-lg border border-accent/20">
+              <Shield className="w-5 h-5 text-accent flex-shrink-0" />
+              <p className="text-sm text-muted-foreground">
+                Your payment is secured with 256-bit SSL encryption via Razorpay's PCI-DSS compliant gateway.
+              </p>
+            </div>
+
+            {/* Razorpay Trust Badge */}
+            <div className="text-center">
+              <p className="text-xs text-muted-foreground">
+                Powered by <span className="font-semibold">Razorpay</span> - India's trusted payment gateway
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>
