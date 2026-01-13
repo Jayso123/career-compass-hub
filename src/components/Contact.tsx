@@ -63,35 +63,46 @@ const Contact = () => {
 
             {/* Contact Info */}
             <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <a
+                href="mailto:hello@careerboosthub.com"
+                className="flex items-start gap-4 group cursor-pointer hover:bg-accent/5 p-2 -m-2 rounded-xl transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
                   <Mail className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1">Email Us</h4>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">Email Us</h4>
                   <p className="text-muted-foreground">hello@careerboosthub.com</p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <a
+                href="tel:+919876543210"
+                className="flex items-start gap-4 group cursor-pointer hover:bg-accent/5 p-2 -m-2 rounded-xl transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
                   <Phone className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1">Call Us</h4>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">Call Us</h4>
                   <p className="text-muted-foreground">+91 98765 43210</p>
                 </div>
-              </div>
+              </a>
 
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
+              <a
+                href="https://wa.me/919876543210"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-4 group cursor-pointer hover:bg-accent/5 p-2 -m-2 rounded-xl transition-colors"
+              >
+                <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
                   <MessageCircle className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1">WhatsApp Support</h4>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">WhatsApp Support</h4>
                   <p className="text-muted-foreground">Quick responses within hours</p>
                 </div>
-              </div>
+              </a>
 
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0">
