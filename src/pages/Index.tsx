@@ -9,10 +9,12 @@ import ParallaxSection from "@/components/ParallaxSection";
 import HorizontalScroll from "@/components/HorizontalScroll";
 import TextRevealSection from "@/components/TextRevealSection";
 import SmoothScrollWrapper from "@/components/SmoothScrollWrapper";
+import ScrollProgressIndicator from "@/components/ScrollProgressIndicator";
 
 const Index = () => {
   return (
     <SmoothScrollWrapper>
+      <ScrollProgressIndicator />
       <main className="min-h-screen overflow-x-hidden">
         <Navbar />
         <Hero />
