@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import BookingModal, { PlanDetails } from "@/components/BookingModal";
 
-const plans = [
+const plans: PlanDetails[] = [
   {
     name: "Basic",
     price: "₹299",
@@ -16,7 +18,6 @@ const plans = [
       "Resource recommendations",
     ],
     popular: false,
-    buttonVariant: "outline" as const,
   },
   {
     name: "Standard",
@@ -32,7 +33,6 @@ const plans = [
       "Action plan document",
     ],
     popular: true,
-    buttonVariant: "highlight" as const,
   },
   {
     name: "Premium",
@@ -49,7 +49,6 @@ const plans = [
       "Job application guidance",
     ],
     popular: false,
-    buttonVariant: "accent" as const,
   },
 ];
 
@@ -71,14 +70,21 @@ const itemVariants = {
 };
 
 const Pricing = () => {
-  const scrollToContact = () => {
-    const element = document.querySelector("#contact");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<PlanDetails | null>(null);
+
+  const handleBookSession = (plan: PlanDetails) => {
+    setSelectedPlan(plan);
+    setIsModalOpen(true);
   };
 
   return (
+    <>
+      <BookingModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        plan={selectedPlan} 
+      />
     <section id="pricing" className="section-padding bg-background">
       <div className="container-main">
         {/* Header */}
@@ -160,12 +166,12 @@ const Pricing = () => {
 
                 {/* CTA Button */}
                 <Button
-                  variant={plan.buttonVariant}
+                  variant={plan.popular ? "highlight" : "accent"}
                   size="lg"
                   className="w-full"
-                  onClick={scrollToContact}
+                  onClick={() => handleBookSession(plan)}
                 >
-                  Get Started
+                  Book Session
                 </Button>
               </div>
             </motion.div>
@@ -184,6 +190,7 @@ const Pricing = () => {
         </motion.p>
       </div>
     </section>
+    </>
   );
 };
 
