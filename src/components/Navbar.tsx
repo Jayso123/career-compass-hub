@@ -36,9 +36,7 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-card/95 backdrop-blur-md shadow-lg border-b border-border"
-          : "bg-transparent"
+        isScrolled ? "bg-card/95 backdrop-blur-md shadow-lg border-b border-border" : "bg-transparent"
       }`}
     >
       <div className="container-main section-padding py-4">
@@ -56,7 +54,9 @@ const Navbar = () => {
             <div className="w-10 h-10 rounded-xl bg-accent flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
               <Rocket className="w-5 h-5 text-accent-foreground" />
             </div>
-            <span className={`font-display font-bold text-xl ${isScrolled ? "text-foreground" : "text-primary-foreground"}`}>
+            <span
+              className={`font-display font-bold text-xl ${isScrolled ? "text-foreground" : "text-primary-foreground"}`}
+            >
               Career<span className="text-accent">Boost</span>
             </span>
           </motion.a>
@@ -79,20 +79,13 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button
-              variant={isScrolled ? "highlight" : "hero"}
-              size="lg"
-              onClick={() => scrollToSection("#contact")}
-            >
+            <Button variant={isScrolled ? "highlight" : "hero"} size="lg" onClick={() => scrollToSection("#contact")}>
               Book Session
             </Button>
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            className="md:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
+          <button className="md:hidden p-2" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
             {isMobileMenuOpen ? (
               <X className={`w-6 h-6 ${isScrolled ? "text-foreground" : "text-primary-foreground"}`} />
             ) : (
@@ -124,7 +117,7 @@ const Navbar = () => {
                   variant="highlight"
                   size="lg"
                   className="w-full mt-4"
-                  onClick={() => scrollToSection("#contact")}
+                  onClick={() => scrollToSection("#pricing")}
                 >
                   Book Session
                 </Button>
