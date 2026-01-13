@@ -16,9 +16,7 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -59,8 +57,8 @@ const Contact = () => {
               Ready to <span className="text-accent">Boost</span> Your Career?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
-              Take the first step towards your dream career. Fill out the form
-              and our team will reach out to schedule your mentorship session.
+              Take the first step towards your dream career. Fill out the form and our team will reach out to schedule
+              your mentorship session.
             </p>
 
             {/* Contact Info */}
@@ -90,9 +88,7 @@ const Contact = () => {
                   <MessageCircle className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1">
-                    WhatsApp Support
-                  </h4>
+                  <h4 className="font-semibold text-foreground mb-1">WhatsApp Support</h4>
                   <p className="text-muted-foreground">Quick responses within hours</p>
                 </div>
               </div>
@@ -103,9 +99,7 @@ const Contact = () => {
                 </div>
                 <div>
                   <h4 className="font-semibold text-foreground mb-1">Location</h4>
-                  <p className="text-muted-foreground">
-                    100% Online — Available Worldwide
-                  </p>
+                  <p className="text-muted-foreground">100% Online — Available Worldwide</p>
                 </div>
               </div>
             </div>
@@ -119,16 +113,11 @@ const Contact = () => {
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             <div className="card-elevated p-6 lg:p-8">
-              <h3 className="font-display text-xl font-bold text-foreground mb-6">
-                Book Your Free Consultation
-              </h3>
+              <h3 className="font-display text-xl font-bold text-foreground mb-6">Book Your Free Consultation</h3>
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
+                  <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                     Full Name
                   </label>
                   <Input
@@ -143,10 +132,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
                     Email Address
                   </label>
                   <Input
@@ -162,10 +148,7 @@ const Contact = () => {
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="phone"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
+                  <label htmlFor="phone" className="block text-sm font-medium text-foreground mb-2">
                     Phone Number
                   </label>
                   <Input
@@ -174,16 +157,13 @@ const Contact = () => {
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    placeholder="+91 98765 43210"
+                    placeholder="+91 7974163946"
                     className="h-12"
                   />
                 </div>
 
                 <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
+                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
                     What are your career goals?
                   </label>
                   <Textarea
@@ -198,13 +178,7 @@ const Contact = () => {
                   />
                 </div>
 
-                <Button
-                  type="submit"
-                  variant="highlight"
-                  size="lg"
-                  className="w-full"
-                  disabled={isSubmitting}
-                >
+                <Button type="submit" variant="highlight" size="lg" className="w-full" disabled={isSubmitting}>
                   {isSubmitting ? (
                     "Sending..."
                   ) : (
@@ -216,9 +190,7 @@ const Contact = () => {
                 </Button>
               </form>
 
-              <p className="text-sm text-muted-foreground text-center mt-4">
-                We respect your privacy. No spam, ever.
-              </p>
+              <p className="text-sm text-muted-foreground text-center mt-4">We respect your privacy. No spam, ever.</p>
             </div>
           </motion.div>
         </div>
