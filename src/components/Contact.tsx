@@ -71,7 +71,9 @@ const Contact = () => {
                   <Mail className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">Email Us</h4>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+                    Email Us
+                  </h4>
                   <p className="text-muted-foreground">hello@careerboosthub.com</p>
                 </div>
               </a>
@@ -84,13 +86,15 @@ const Contact = () => {
                   <Phone className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">Call Us</h4>
-                  <p className="text-muted-foreground">+91 98765 43210</p>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+                    Call Us
+                  </h4>
+                  <p className="text-muted-foreground">+91 7974163946</p>
                 </div>
               </a>
 
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/917974163946"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-start gap-4 group cursor-pointer hover:bg-accent/5 p-2 -m-2 rounded-xl transition-colors"
@@ -99,7 +103,9 @@ const Contact = () => {
                   <MessageCircle className="w-5 h-5 text-accent" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">WhatsApp Support</h4>
+                  <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
+                    WhatsApp Support
+                  </h4>
                   <p className="text-muted-foreground">Quick responses within hours</p>
                 </div>
               </a>
