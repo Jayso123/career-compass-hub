@@ -74,12 +74,12 @@ const Contact = () => {
                   <h4 className="font-semibold text-foreground mb-1 group-hover:text-accent transition-colors">
                     Email Us
                   </h4>
-                  <p className="text-muted-foreground">hello@careerboosthub.com</p>
+                  <p className="text-muted-foreground">support@careerboosthub.com</p>
                 </div>
               </a>
 
               <a
-                href="tel:+919876543210"
+                href="tel:+917974163946"
                 className="flex items-start gap-4 group cursor-pointer hover:bg-accent/5 p-2 -m-2 rounded-xl transition-colors"
               >
                 <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center flex-shrink-0 group-hover:bg-accent/20 transition-colors">
