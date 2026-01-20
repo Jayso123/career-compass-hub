@@ -26,8 +26,7 @@ const Footer = () => {
               </span>
             </div>
             <p className="text-primary-foreground/70 mb-6">
-              Empowering students to make confident career decisions through
-              expert mentorship and guidance.
+              Empowering students to make confident career decisions through expert mentorship and guidance.
             </p>
             <div className="flex gap-4">
               <a
@@ -53,9 +52,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-display font-semibold text-lg mb-4">
-              Quick Links
-            </h4>
+            <h4 className="font-display font-semibold text-lg mb-4">Quick Links</h4>
             <ul className="space-y-3">
               {[
                 { name: "Home", href: "#home" },
@@ -78,41 +75,29 @@ const Footer = () => {
 
           {/* Services */}
           <div>
-            <h4 className="font-display font-semibold text-lg mb-4">
-              Services
-            </h4>
+            <h4 className="font-display font-semibold text-lg mb-4">Services</h4>
             <ul className="space-y-3">
-              {[
-                "Career Counseling",
-                "Resume Review",
-                "Interview Prep",
-                "Skill Roadmaps",
-                "Industry Insights",
-              ].map((service) => (
-                <li key={service}>
-                  <span className="text-primary-foreground/70">{service}</span>
-                </li>
-              ))}
+              {["Career Counseling", "Resume Review", "Interview Prep", "Skill Roadmaps", "Industry Insights"].map(
+                (service) => (
+                  <li key={service}>
+                    <span className="text-primary-foreground/70">{service}</span>
+                  </li>
+                ),
+              )}
             </ul>
           </div>
 
           {/* Contact */}
           <div>
-            <h4 className="font-display font-semibold text-lg mb-4">
-              Contact Us
-            </h4>
+            <h4 className="font-display font-semibold text-lg mb-4">Contact Us</h4>
             <ul className="space-y-4">
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-accent" />
-                <span className="text-primary-foreground/70">
-                  hello@careerboosthub.com
-                </span>
+                <span className="text-primary-foreground/70">hello@careerboosthub.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-accent" />
-                <span className="text-primary-foreground/70">
-                  +91 98765 43210
-                </span>
+                <span className="text-primary-foreground/70">+91 98765 43210</span>
               </li>
             </ul>
           </div>
@@ -120,20 +105,14 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-primary-foreground/60 text-sm">
-            © {currentYear} Career Boost Hub. All rights reserved.
-          </p>
+          <p className="text-primary-foreground/60 text-sm">© {currentYear} Career Boost Hub. All rights reserved.</p>
+          <br />
+          <p className="text-primary-foreground/60 text-sm">Created by CareerBoost Team</p>
           <div className="flex gap-6 text-sm">
-            <a
-              href="#"
-              className="text-primary-foreground/60 hover:text-accent transition-colors"
-            >
+            <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
               Privacy Policy
             </a>
-            <a
-              href="#"
-              className="text-primary-foreground/60 hover:text-accent transition-colors"
-            >
+            <a href="#" className="text-primary-foreground/60 hover:text-accent transition-colors">
               Terms of Service
             </a>
           </div>
