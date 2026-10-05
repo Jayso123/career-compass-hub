@@ -58,6 +58,8 @@ export type Database = {
       }
       bookings: {
         Row: {
+          admin_notes: string
+          admin_review_status: string
           amount_inr: number
           candidate_id: string
           candidate_signoff: boolean
@@ -74,6 +76,8 @@ export type Database = {
           tier_id: string
         }
         Insert: {
+          admin_notes?: string
+          admin_review_status?: string
           amount_inr: number
           candidate_id: string
           candidate_signoff?: boolean
@@ -90,6 +94,8 @@ export type Database = {
           tier_id: string
         }
         Update: {
+          admin_notes?: string
+          admin_review_status?: string
           amount_inr?: number
           candidate_id?: string
           candidate_signoff?: boolean
@@ -242,6 +248,7 @@ export type Database = {
       }
       mentors: {
         Row: {
+          approval_status: string
           bio: string
           company: string
           created_at: string
@@ -251,6 +258,7 @@ export type Database = {
           name: string
           prev_company: string | null
           rating: number
+          reviewed_at: string | null
           reviews: number
           specializations: string[]
           title: string
@@ -258,6 +266,7 @@ export type Database = {
           years_exp: number
         }
         Insert: {
+          approval_status?: string
           bio?: string
           company?: string
           created_at?: string
@@ -267,6 +276,7 @@ export type Database = {
           name: string
           prev_company?: string | null
           rating?: number
+          reviewed_at?: string | null
           reviews?: number
           specializations?: string[]
           title?: string
@@ -274,6 +284,7 @@ export type Database = {
           years_exp?: number
         }
         Update: {
+          approval_status?: string
           bio?: string
           company?: string
           created_at?: string
@@ -283,6 +294,7 @@ export type Database = {
           name?: string
           prev_company?: string | null
           rating?: number
+          reviewed_at?: string | null
           reviews?: number
           specializations?: string[]
           title?: string
